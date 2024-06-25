@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 25, 2024 at 02:16 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: localhost
+-- Generation Time: Jun 25, 2024 at 10:47 AM
+-- Server version: 8.0.37-0ubuntu0.20.04.3
+-- PHP Version: 8.2.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,13 +28,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `advertisements` (
-  `ad_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `property_id` bigint(20) NOT NULL,
-  `status` enum('DRAFT','PENDING','PUBLIC','RENTED','BLOCKED') NOT NULL DEFAULT 'DRAFT',
-  `rental_period` int(11) NOT NULL COMMENT 'period in months',
-  `rental_price` bigint(20) NOT NULL,
-  `description` varchar(4096) NOT NULL
+  `ad_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  `property_id` bigint NOT NULL,
+  `status` enum('DRAFT','PENDING','PUBLIC','RENTED','BLOCKED') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'DRAFT',
+  `rental_period` int NOT NULL COMMENT 'period in months',
+  `rental_price` bigint NOT NULL,
+  `description` varchar(4096) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -42,8 +42,13 @@ CREATE TABLE `advertisements` (
 --
 
 INSERT INTO `advertisements` (`ad_id`, `user_id`, `property_id`, `status`, `rental_period`, `rental_price`, `description`) VALUES
-(3, 1, 5, 'RENTED', 0, 9077, 'some modified description blahblahblahblahblahblahblahblahblahblahblahblah'),
-(4, 1, 4, 'DRAFT', 12, 12000, 'vdavjdtfjdtfdbfwdtfutndfuy3fud53fd5nfa675dfj7fz8cfznmfe67fzjwef5wnza7f6z5fgzfnzyufgz8tfgz8nfc5z85fgz85f8dczj8c5gfz56n8365n8356865zgec8n5mz85cgz875cgnz87en58z756fgnz85fgz8fg5zd58gd85fg5zg!');
+(3, 1, 5, 'PUBLIC', 0, 9077, 'some modified description blahblahblahblahblahblahblahblahblahblahblahblah'),
+(4, 1, 4, 'RENTED', 12, 12000, 'vdavjdtfjdtfdbfwdtfutndfuy3fud53fd5nfa675dfj7fz8cfznmfe67fzjwef5wnza7f6z5fgzfnzyufgz8tfgz8nfc5z85fgz85f8dczj8c5gfz56n8365n8356865zgec8n5mz85cgz875cgnz87en58z756fgnz85fgz8fg5zd58gd85fg5zg!'),
+(5, 1, 7, 'PUBLIC', 12, 5000, 'Sample description lorem ipsum dolor sit amet. blah blah blah.'),
+(6, 1, 8, 'PENDING', 4, 20000, 'somewhereee far far away somewhereee far far away somewhereee far far away somewhereee far far away somewhereee far far away '),
+(7, 9, 9, 'RENTED', 6, 25000, 'Charming 2 bedroom house in a desirable neighborhood. Bright and airy with amazing view, perfect for entertaining. Move-in ready and close to shops, parks, public transport. Don\'t miss out!'),
+(9, 9, 11, 'PUBLIC', 2, 2474, 'Cozy 1-bedroom bungalow with a fireplace, nestled in a quiet neighborhood. Move-in ready and just steps from cafes, parks, and public transportation. Perfect for a low-maintenance lifestyle.'),
+(10, 9, 12, 'BLOCKED', 10, 76276753, 'yusfurfggujrsffgujsrbju erfursg urgtu tgurfdfdggfdgfg');
 
 -- --------------------------------------------------------
 
@@ -52,9 +57,9 @@ INSERT INTO `advertisements` (`ad_id`, `user_id`, `property_id`, `status`, `rent
 --
 
 CREATE TABLE `locations` (
-  `location_id` bigint(20) NOT NULL,
-  `location_name` varchar(128) NOT NULL,
-  `iframe` varchar(4096) DEFAULT NULL
+  `location_id` bigint NOT NULL,
+  `location_name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `iframe` varchar(4096) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -78,16 +83,16 @@ INSERT INTO `locations` (`location_id`, `location_name`, `iframe`) VALUES
 --
 
 CREATE TABLE `properties` (
-  `property_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `type_id` bigint(20) NOT NULL,
-  `location_id` bigint(20) NOT NULL,
-  `street_address` text NOT NULL,
-  `capacity` int(11) NOT NULL DEFAULT 1,
-  `parking` tinyint(1) NOT NULL DEFAULT 0,
-  `pets_allowed` tinyint(1) NOT NULL DEFAULT 0,
-  `description` varchar(4096) NOT NULL
+  `property_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  `name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `type_id` bigint NOT NULL,
+  `location_id` bigint NOT NULL,
+  `street_address` text COLLATE utf8mb4_general_ci NOT NULL,
+  `capacity` int NOT NULL DEFAULT '1',
+  `parking` tinyint(1) NOT NULL DEFAULT '0',
+  `pets_allowed` tinyint(1) NOT NULL DEFAULT '0',
+  `description` varchar(4096) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -95,9 +100,14 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`property_id`, `user_id`, `name`, `type_id`, `location_id`, `street_address`, `capacity`, `parking`, `pets_allowed`, `description`) VALUES
-(4, 1, 'Sample Prop #1', 5, 1, 'Backa 39, Subotica 24000', 2, 1, 1, 'hjrrhrdVD5BU5U 5875B8 F55 DUD5U 5VD UUY5 DUYUVGUV5 U75 V6R7 U7B IUBG8B5U5U7865RBBU5V6 V5V6 BVB U656U775VDVD V 5UU5D7B7675646b7ib6ib6uy5drrdrdjf tfuy5uy5du'),
+(4, 1, 'Emma\'s Home', 5, 1, 'Backa 39, Subotica 24000', 2, 1, 1, 'daaaaaaaaaaaaaauisghbdfufsed usfieuedfiusef fes  esffuseuifesbiusef fse usefbuijfes u sfuebu efjbszjubdefjusedu  se'),
 (5, 1, 'hjjkl', 3, 6, 'tfybtyfakrtyakrkrytufrktag54', 3, 1, 1, 'vtfvjtrfirf65fr56wfr56wur6w8r6wr6wrg68sgif7sifgu6fdgz6fd6rg437grisgrfjsefgduytyfjy'),
-(7, 1, 'PROPERYTYEAFDAJ', 4, 8, 'hgavtfdvatyi7bn6ghHGHGCHC', 7, 1, 1, 'GFVJDHGVJFDGVJGGcjhfcjhcrcr  uyrcuy bcuc cjt jctb bttb ct cttcbbucybucyr j  tycybuycr5f5bu7u56uc b nc.');
+(7, 1, 'PROPERYTYEAFDAJ', 4, 8, 'hgavtfdvatyi7bn6ghHGHGCHC', 7, 1, 1, 'GFVJDHGVJFDGVJGGcjhfcjhcrcr  uyrcuy bcuc cjt jctb bttb ct cttcbbucybucyr j  tycybuycr5f5bu7u56uc b nc.'),
+(8, 1, 'something', 2, 2, 'Somewhere 23a subotica', 3, 1, 1, 'somewhereee far far away somewhereee far far away somewhereee far far away somewhereee far far away somewhereee far far away '),
+(9, 9, 'Winters House', 1, 6, 'Aleja Marsala tita 3a Subotica 24000', 2, 1, 1, 'Charming 2 bedroom house in a desirable neighborhood. Bright and airy with amazing view, perfect for entertaining. Move-in ready and close to shops, parks, public transport. Don\'t miss out!'),
+(10, 9, 'Harry Poah', 1, 8, 'Prozivka , Ulica ima Ime 48 Subotica', 2, 1, 1, 'Bright and airy 2-bedroom house with hardwood floors in a desirable neighborhood. Perfect for entertaining and close to shops, parks, and public transportation. Move-in ready!'),
+(11, 9, 'Cozys Apartment', 5, 2, 'Zorka, Subotica, Ulica Somewhere 23', 8, 1, 1, 'Cozy 1-bedroom bungalow with a fireplace, nestled in a quiet neighborhood. Move-in ready and just steps from cafes, parks, and public transportation. Perfect for a low-maintenance lifestyle.'),
+(12, 9, 'Winters House', 3, 4, 'hfhfhfdafh suubadshvf 1654', 5, 1, 1, 'ghsdfagjhsfdg sdfahgsfdghdsgfh fsdavjfdshagjfhdsvav');
 
 -- --------------------------------------------------------
 
@@ -106,9 +116,9 @@ INSERT INTO `properties` (`property_id`, `user_id`, `name`, `type_id`, `location
 --
 
 CREATE TABLE `property_types` (
-  `type_id` bigint(20) NOT NULL,
-  `type_name` varchar(128) NOT NULL,
-  `description` varchar(512) NOT NULL
+  `type_id` bigint NOT NULL,
+  `type_name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(512) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -129,11 +139,11 @@ INSERT INTO `property_types` (`type_id`, `type_name`, `description`) VALUES
 --
 
 CREATE TABLE `rented_by` (
-  `property_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `rented_on` date NOT NULL DEFAULT current_timestamp(),
-  `rental_period` int(11) NOT NULL COMMENT 'period in months',
-  `rental_price` bigint(20) NOT NULL
+  `property_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  `rented_on` date NOT NULL DEFAULT (curdate()),
+  `rental_period` int NOT NULL COMMENT 'period in months',
+  `rental_price` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -141,7 +151,8 @@ CREATE TABLE `rented_by` (
 --
 
 INSERT INTO `rented_by` (`property_id`, `user_id`, `rented_on`, `rental_period`, `rental_price`) VALUES
-(5, 4, '2024-06-25', 0, 9077);
+(4, 4, '2024-06-24', 12, 12000),
+(9, 4, '2024-06-25', 6, 25000);
 
 -- --------------------------------------------------------
 
@@ -150,10 +161,10 @@ INSERT INTO `rented_by` (`property_id`, `user_id`, `rented_on`, `rental_period`,
 --
 
 CREATE TABLE `task2_login_failure` (
-  `id_login_failure` bigint(20) NOT NULL,
-  `username` varchar(64) NOT NULL,
+  `id_login_failure` bigint NOT NULL,
+  `username` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `password` char(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT current_timestamp()
+  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -174,10 +185,10 @@ INSERT INTO `task2_login_failure` (`id_login_failure`, `username`, `password`, `
 --
 
 CREATE TABLE `task2_users` (
-  `id_user` bigint(20) NOT NULL,
-  `username` varchar(64) NOT NULL,
+  `id_user` bigint NOT NULL,
+  `username` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `password` char(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `name` varchar(128) NOT NULL
+  `name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -196,13 +207,13 @@ INSERT INTO `task2_users` (`id_user`, `username`, `password`, `name`) VALUES
 --
 
 CREATE TABLE `user_accounts` (
-  `user_id` bigint(20) NOT NULL,
-  `email` varchar(128) NOT NULL,
+  `user_id` bigint NOT NULL,
+  `email` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
   `password_hash` char(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `account_state` enum('NOT_VERIFIED','ACTIVE','BLOCKED','ADMIN') NOT NULL DEFAULT 'NOT_VERIFIED',
-  `first_name` varchar(128) NOT NULL,
-  `last_name` varchar(128) NOT NULL,
-  `phone_number` bigint(20) DEFAULT NULL
+  `account_state` enum('NOT_VERIFIED','ACTIVE','BLOCKED','ADMIN') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'NOT_VERIFIED',
+  `first_name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `last_name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -210,8 +221,12 @@ CREATE TABLE `user_accounts` (
 --
 
 INSERT INTO `user_accounts` (`user_id`, `email`, `password_hash`, `account_state`, `first_name`, `last_name`, `phone_number`) VALUES
-(1, 'priyansh.agr4@gmail.com', '$2y$10$.zp3ngcFTvIwxwwvbUSmJOQGLoP0laHWwBsHtOzS75kNd7uD7g8wC', 'ACTIVE', 'PriyanshHHH', 'Agraharii1', 917991898),
-(4, 'bemanuela3@gmail.com', '$2y$10$6oVQjaWd1JQvp8aa0d.U1OJVt4QBWGRKQyF5es/u1xsZwg5hi7BAC', 'ADMIN', 'Emanuela', 'Bosnjak', 787878787);
+(1, 'priyansh.agr4@gmail.com', '$2y$10$quFh0Utcq5OKqGxziTLNSOmEJwySfJN3dx7gnq/3U7vG0PHrB8Bc2', 'ACTIVE', 'Priyansh', 'Agrahari', 917991890),
+(4, 'bemanuela3@gmail.com', '$2y$10$6oVQjaWd1JQvp8aa0d.U1OJVt4QBWGRKQyF5es/u1xsZwg5hi7BAC', 'ADMIN', 'Emanuela', 'Bosnjak', 787878787),
+(7, 'greg.gregly@hotmail.com', '$2y$10$fRqZg2asIEH5pmoHL/2tc.RGNpEJYCyPJQxGZA75i8dW2wTOgUWQe', 'BLOCKED', 'Greg', 'Gregly', 765456209),
+(8, 'earth.c37@gmail.com', '$2y$10$MccMJkyavpjP290DdQLiJOdFzIsEhH5cLe9/z.eDB2Es8lCWKi9Ie', 'NOT_VERIFIED', 'Rick', 'Sanchez', 737373737),
+(9, 'cyddwrqz@fmailler.net', '$2y$10$2jBeFn5I/s6yoXOnfR7ifO2LXawJs1h/k08.qWUJuiQ65Z6kKa3H2', 'ACTIVE', 'Mao', 'MaoMao', 638060737),
+(10, 'something@gmail.com', '$2y$10$r8DENPCOWMuUU6QbugKS2eFeBmjYozMLgsf1GObJBwe228WJJx9cS', 'ACTIVE', 'Neko', 'Nesto', 638060738);
 
 -- --------------------------------------------------------
 
@@ -220,10 +235,10 @@ INSERT INTO `user_accounts` (`user_id`, `email`, `password_hash`, `account_state
 --
 
 CREATE TABLE `week8_messages` (
-  `id_message` int(11) NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `message` varchar(512) NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT current_timestamp()
+  `id_message` int NOT NULL,
+  `name` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `message` varchar(512) COLLATE utf8mb4_general_ci NOT NULL,
+  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -245,10 +260,10 @@ INSERT INTO `week8_messages` (`id_message`, `name`, `message`, `date_time`) VALU
 --
 
 CREATE TABLE `week9_files` (
-  `id_file` int(11) NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `description` varchar(128) NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT current_timestamp()
+  `id_file` int NOT NULL,
+  `name` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
+  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -330,55 +345,55 @@ ALTER TABLE `week9_files`
 -- AUTO_INCREMENT for table `advertisements`
 --
 ALTER TABLE `advertisements`
-  MODIFY `ad_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ad_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `locations`
 --
 ALTER TABLE `locations`
-  MODIFY `location_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `location_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `property_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `property_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `property_types`
 --
 ALTER TABLE `property_types`
-  MODIFY `type_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `type_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `task2_login_failure`
 --
 ALTER TABLE `task2_login_failure`
-  MODIFY `id_login_failure` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_login_failure` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `task2_users`
 --
 ALTER TABLE `task2_users`
-  MODIFY `id_user` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_user` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `week8_messages`
 --
 ALTER TABLE `week8_messages`
-  MODIFY `id_message` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_message` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `week9_files`
 --
 ALTER TABLE `week9_files`
-  MODIFY `id_file` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_file` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
